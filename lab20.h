@@ -74,13 +74,21 @@ void Unit::showStatus(){
 
 void Unit::newTurn(){
 	guard_on = false; 
+	dodge_on = false;
 }
 
 int Unit::beAttacked(int oppatk){
 	int dmg;
-	if(oppatk > def){
-		dmg = oppatk-def;	
-		if(guard_on) dmg = dmg/3;
+	if(dodge_on && rand() % 2 == 0){
+		dmg = 0;
+	} else {
+		if(oppatk > def){
+			dmg = oppatk-def;	
+			if(guard_on) dmg = dmg/3;
+			if(dodge_on) dmg *= 2;
+		} else {
+			dmg = 0;
+		}
 	}	
 	hp -= dmg;
 	if(hp <= 0){hp = 0;}
@@ -90,6 +98,14 @@ int Unit::beAttacked(int oppatk){
 
 int Unit::attack(Unit &opp){
 	return opp.beAttacked(atk);
+}
+
+int Unit::ultimateAttack(Unit &opp){
+    return opp.beAttacked(atk * 2 );
+}
+
+void Unit::dodge(){
+	dodge_on = true;
 }
 
 int Unit::heal(){
